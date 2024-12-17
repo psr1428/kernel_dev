@@ -1,0 +1,18 @@
+handle_int1:
+    mov ah,0eh
+    mov al,'A'
+    int 0x10
+    iret
+handle_int2:
+    mov ah,0eh
+    mov al,'A'
+    int 0x10
+    iret
+    
+    mov word[ss:0x0],handle_int1
+    mov word[ss:0x2],0x7c0
+
+    mov word[ss:0x4],handle_int2
+    mov word[ss:0x6],0x7c0
+
+    int 1
