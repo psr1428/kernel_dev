@@ -1,4 +1,4 @@
-ORG 0x0
+ORG 0x7c00
 ; section .text
 BITS 16
 ; extern load_protecetd
@@ -6,41 +6,23 @@ CODE_SEG equ gdt_code-gdt_start
 DATA_SEG equ gdt_data-gdt_start
 
 __start:
-    jmp short start
+    jmp short start_section
     nop
 times 33 db 0
 
-start:
-    jmp 0x7c0:start_section
+; start:
+;     jmp 0x7c0:start_section
 
 start_section:
     cli ;Clear interrupts
-    mov ax,0x7c0
+    mov ax,0
     ; mov ax,0x6c0
     mov ds,ax
     mov es,ax
-    mov ax,0x00
+    mov ax,0x0
     mov ss,ax
     mov sp,0x7c00
     sti;Enables interrupts
-    times 510 - ($ - $$) db 0
-    dw 0xAA55
-    ; mov ah,2
-    ; mov al,1
-    ; mov ch,0
-    ; mov cl,2
-    ; mov dh,0
-    ; mov bx,buffer
-    ; int 0x13
-    ; jc error
-
-    ; mov si,buffer
-    ; call print
-    ;mov bx,test_buffer
-    ;mov si,test_buffer
-    ;call print
-    ; jmp $
-    ; call load_protecetd
 
 .load_protecetd:
     cli
@@ -71,10 +53,10 @@ gdt_data:   ;data segment,ss,es
     db 0            ; base 24-31 bits
 gdt_end:
 gdt_desc:
-    dw gdt_end - gdt_start -1
+    dw gdt_end-gdt_start-1
     dd  gdt_start
 
-BITS 32
+[BITS 32]
 load32:
     jmp $
 
@@ -98,7 +80,7 @@ print_char:
     ret
 error_msg: db 'Fail to load disk',0
 message: db 'Hello world',0
-; times 510 - ($ - $$) db 0
-; dw 0xAA55
+times 510 - ($ - $$) db 0
+dw 0xAA55
 buffer:
 ;test_buffer: db 'Hellllllo',0

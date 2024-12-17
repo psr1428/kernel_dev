@@ -6,3 +6,5 @@ all:
 	nasm -f bin ./boot.asm -o ./boot.bin
 	# dd if=./hello.txt >> ./boot.bin
 	# dd if=/dev/zero bs=512 count=1 >> boot.bin
+clean:
+	rm -rf ./boot.bin
