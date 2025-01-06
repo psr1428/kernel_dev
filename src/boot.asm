@@ -6,12 +6,12 @@ CODE_SEG equ gdt_code-gdt_start
 DATA_SEG equ gdt_data-gdt_start
 
 __start:
-    jmp short start_section
+    jmp short start
     nop
 times 33 db 0
 
-; start:
-;     jmp 0x7c0:start_section
+start:
+     jmp 0:start_section
 
 start_section:
     cli ;Clear interrupts
@@ -31,7 +31,7 @@ start_section:
     or eax,0x1
     mov cr0,eax
     jmp CODE_SEG:load32
-    jmp $
+    ;jmp $
 gdt_start:
 gdt_null:
     dd 0x0
@@ -61,9 +61,9 @@ gdt_desc:
 load32:
     mov eax,1
     mov ecx,100
-    mov edi,0x1000000
+    mov edi,0x100000
     call ata_lda_read
-    jmp CODE_SEG:0x1000000
+    jmp CODE_SEG:0x100000
 
 ata_lda_read:
     mov ebx,eax ;Backup the LBA
@@ -114,7 +114,7 @@ ata_lda_read:
     jz .try_again
 
     ;Read 256 words at a time
-    mov eax,256
+    mov ecx,256
     mov dx,0x1F0
     rep insw
     pop ecx
