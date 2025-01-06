@@ -2,9 +2,11 @@ section .asm
 
 extern kboard_handler
 extern noint_handler
+
 global idt_load
 global int21h
 global no_int
+
 idt_load:
 	push ebp
 	mov ebp,esp
@@ -13,15 +15,15 @@ idt_load:
 	pop ebp
 	ret
 int21h:
-	pushad
 	cli
+	pushad
 	call kboard_handler
 	popad
 	sti
 	iret
 no_int:
-	pushad
 	cli
+	pushad
 	call noint_handler
 	popad
 	sti

@@ -28,9 +28,9 @@ void noint_handler()
 void set_idt(int int_no,void *addr)
 {
 	struct idt_desc* desc = &idt_desc_table[int_no];
-	desc->lOffset = (uint32_t)addr & 0xFF;
+	desc->lOffset = (uint32_t)addr & 0x0000ffff;
 	desc->selector = KERNEL_CODE_SELECTOR;
-        desc->zero = 0x00;
+	desc->zero = 0x00;
 	desc->type_attr = 0xEE;
 	desc->hOffset = (uint32_t)addr >> 16;
 }	

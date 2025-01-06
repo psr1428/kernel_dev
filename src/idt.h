@@ -7,7 +7,7 @@ struct idt_desc
 {
 	uint16_t lOffset; //offset bits 0-15
 	uint16_t selector;//selector in GDT
-	uint16_t zero; //unused 
+	uint8_t zero; //unused 
 	uint8_t type_attr; //desc type and attr
 	uint16_t hOffset; //offset bits 16-31
 }__attribute__((packed));

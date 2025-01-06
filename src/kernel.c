@@ -26,7 +26,7 @@ void kernel_main()
     const char *str = "Hello prashant";
     print(str);
     idt_init();
-    outb(0x60,0xff);
+    // outb(0x60,0xff);
 
 }
 
