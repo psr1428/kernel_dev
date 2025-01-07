@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "idt.h"
 #include "io.h"
+#include "kheap.h"
 
 uint16_t *video_mem_addr;
 uint16_t terminal_make_char(char c,char colour);
@@ -25,7 +26,16 @@ void kernel_main()
     // video_mem_addr[0] = terminal_make_char('C',4);
     const char *str = "Hello prashant";
     print(str);
+    kheap_init();
     idt_init();
+    enable_interrupts();
+    void *test_ptr1 = kernel_malloc(50);
+    kernel_free(test_ptr1);
+    void *test_ptr2 = kernel_malloc(100);
+    if(test_ptr1 || test_ptr2)
+    {
+        print("Received Heap allocation\n");
+    }
     // outb(0x60,0xff);
 
 }

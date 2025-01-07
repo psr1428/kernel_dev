@@ -26,7 +26,7 @@ __start:
 
     mov al, 00000001b
     out 0x21,al
-    sti
+    ;sti
     ;End of remap the master PIC
     call kernel_main
 

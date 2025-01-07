@@ -10,4 +10,13 @@
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 20
 
+#define HEAP_SIZE_BYTES  104857600
+#define HEAP_BLKSIZE     4096
+#define HEAP_ADDRESS     0x01000000	
+#define HEAP_TABLE_ADDR  0x00007E00
+
+#define KRNL_OK 0
+#define EIO     1
+#define EINVARG 2
+#define ENOMEM  3
 #endif
