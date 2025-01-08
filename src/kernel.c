@@ -5,6 +5,7 @@
 #include "idt.h"
 #include "io.h"
 #include "kheap.h"
+#include "paging.h"
 
 uint16_t *video_mem_addr;
 uint16_t terminal_make_char(char c,char colour);
@@ -17,6 +18,8 @@ void print(const char *str);
 int terminal_row_idx = 0;
 int terminal_column_idx = 0;
 
+static struct paging_chunk *kernel_chunk;
+
 void kernel_main()
 {
     video_mem_addr = (uint16_t*)(x86_VIDEO_MEM_ADDR);
@@ -24,11 +27,23 @@ void kernel_main()
     // terminal_writechar('A',4);
     //serial_write("Hello, QEMU -nographic!\n");
     // video_mem_addr[0] = terminal_make_char('C',4);
-    const char *str = "Hello prashant";
-    print(str);
+    // const char *str = "Hello prashant";
+    // print(str);
     kheap_init();
     idt_init();
+    char *heap_mem = kernel_zalloc(4096);
+    kernel_chunk = paging_new(PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
+    paging_switch(paging_4gb_chunk_get_directory(kernel_chunk));
+
+    paging_set(paging_4gb_chunk_get_directory(kernel_chunk), (void*)0x1000, (uint32_t)heap_mem | PAGING_ACCESS_FROM_ALL | PAGING_IS_PRESENT | PAGING_IS_WRITEABLE);
+    enable_paging();
+    char *ptr2 = (char*)0x1000;
+    ptr2[0] = 'P';
+    ptr2[1] = 'R';
+    print(ptr2);
+    print(heap_mem);
     enable_interrupts();
+#if 0
     void *test_ptr1 = kernel_malloc(50);
     kernel_free(test_ptr1);
     void *test_ptr2 = kernel_malloc(100);
@@ -37,6 +52,7 @@ void kernel_main()
         print("Received Heap allocation\n");
     }
     // outb(0x60,0xff);
+#endif
 
 }
 

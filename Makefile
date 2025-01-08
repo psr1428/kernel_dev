@@ -1,4 +1,4 @@
-KERNEL_OUTPUT_FILE = ./build/kernel.asm.o ./build/kernel.o ./build/idt.o ./build/idt.asm.o ./build/memory.o ./build/io.asm.o ./build/heap.o ./build/kheap.o
+KERNEL_OUTPUT_FILE = ./build/kernel.asm.o ./build/kernel.o ./build/idt.o ./build/idt.asm.o ./build/memory.o ./build/io.asm.o ./build/heap.o ./build/kheap.o ./build/paging.o ./build/paging.asm.o
 INCLUDES = -I ./src
 FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
@@ -31,6 +31,9 @@ clean:
 ./build/idt.asm.o: ./src/idt.asm
 	nasm -f elf ./src/idt.asm -o ./build/idt.asm.o -g
 
+./build/paging.asm.o: ./src/paging.asm
+	nasm -f elf ./src/paging.asm -o ./build/paging.asm.o -g
+
 ./build/memory.o: ./src/memory.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/memory.c -o ./build/memory.o
 
@@ -45,3 +48,6 @@ clean:
 
 ./build/kheap.o: ./src/kheap.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/kheap.c -o ./build/kheap.o
+
+./build/paging.o: ./src/paging.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/paging.c -o ./build/paging.o
