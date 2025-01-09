@@ -6,11 +6,14 @@
 #include "io.h"
 #include "kheap.h"
 #include "paging.h"
+#include "disk.h"
+#include "string.h"
+#include "pathparser.h"
 
 uint16_t *video_mem_addr;
 uint16_t terminal_make_char(char c,char colour);
 void terminal_put_char(int x, int y, char c, char colour);
-size_t strlen(const char* str);
+// size_t strlen(const char* str);
 void terminal_writechar(char c,char colour);
 void terminal_init();
 void print(const char *str);
@@ -30,20 +33,28 @@ void kernel_main()
     // const char *str = "Hello prashant";
     // print(str);
     kheap_init();
+    disk_search_and_init();
     idt_init();
     char *heap_mem = kernel_zalloc(4096);
     kernel_chunk = paging_new(PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
-    paging_switch(paging_4gb_chunk_get_directory(kernel_chunk));
+    paging_switch(paging_get_directory(kernel_chunk));
 
-    paging_set(paging_4gb_chunk_get_directory(kernel_chunk), (void*)0x1000, (uint32_t)heap_mem | PAGING_ACCESS_FROM_ALL | PAGING_IS_PRESENT | PAGING_IS_WRITEABLE);
+    paging_set(paging_get_directory(kernel_chunk), (void*)0x1000, (uint32_t)heap_mem | PAGING_ACCESS_FROM_ALL | PAGING_IS_PRESENT | PAGING_IS_WRITEABLE);
     enable_paging();
+    enable_interrupts();
+    struct path_root *root_path = path_parse("0:/bin/shell.exe",NULL);
+    if(root_path)
+    {
+
+    }
+#if 0
     char *ptr2 = (char*)0x1000;
     ptr2[0] = 'P';
     ptr2[1] = 'R';
     print(ptr2);
     print(heap_mem);
-    enable_interrupts();
-#if 0
+    char buf[512];
+    disk_read_sector(0,1,buf);
     void *test_ptr1 = kernel_malloc(50);
     kernel_free(test_ptr1);
     void *test_ptr2 = kernel_malloc(100);
@@ -60,15 +71,15 @@ uint16_t terminal_make_char(char c,char colour)
 {
     return (colour << 8) | c;
 }
-size_t strlen(const char* str)
-{
-    size_t len = 0;
-    while(str[len])
-    {
-        len++;
-    }
-    return len;
-}
+// size_t strlen(const char* str)
+// {
+//     size_t len = 0;
+//     while(str[len])
+//     {
+//         len++;
+//     }
+//     return len;
+// }
 
 void print(const char *str)
 {

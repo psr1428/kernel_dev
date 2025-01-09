@@ -15,8 +15,11 @@
 #define HEAP_ADDRESS     0x01000000	
 #define HEAP_TABLE_ADDR  0x00007E00
 
+#define DISK_SECTOR_SIZE    512
+
 #define KRNL_OK 0
 #define EIO     1
 #define EINVARG 2
 #define ENOMEM  3
+#define EBADPATH 4
 #endif
