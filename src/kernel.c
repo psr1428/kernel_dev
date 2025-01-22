@@ -9,6 +9,8 @@
 #include "disk.h"
 #include "string.h"
 #include "pathparser.h"
+#include "file.h"
+#include "memory.h"
 
 uint16_t *video_mem_addr;
 uint16_t terminal_make_char(char c,char colour);
@@ -21,7 +23,7 @@ void print(const char *str);
 int terminal_row_idx = 0;
 int terminal_column_idx = 0;
 
-static struct paging_chunk *kernel_chunk;
+static struct paging_chunk *kernel_chunk = 0;
 
 void kernel_main()
 {
@@ -33,20 +35,34 @@ void kernel_main()
     // const char *str = "Hello prashant";
     // print(str);
     kheap_init();
+    // Initialize filesystems
+    fs_init();
     disk_search_and_init();
     idt_init();
-    char *heap_mem = kernel_zalloc(4096);
+
+    // char *heap_mem = kernel_zalloc(4096);
+    // memset(heap_mem,0,4096);
     kernel_chunk = paging_new(PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
     paging_switch(paging_get_directory(kernel_chunk));
-
-    paging_set(paging_get_directory(kernel_chunk), (void*)0x1000, (uint32_t)heap_mem | PAGING_ACCESS_FROM_ALL | PAGING_IS_PRESENT | PAGING_IS_WRITEABLE);
+    // paging_set(paging_get_directory(kernel_chunk), (void*)0x2000, (uint32_t)heap_mem | PAGING_ACCESS_FROM_ALL | PAGING_IS_PRESENT | PAGING_IS_WRITEABLE);
     enable_paging();
     enable_interrupts();
-    struct path_root *root_path = path_parse("0:/bin/shell.exe",NULL);
-    if(root_path)
+    int fd = fopen("0:/hello.txt", "r");
+    char bufread[20];
+    if (fd)
     {
-
+        print("We opened hello.txt\n");
+        fseek(fd,5,SEEK_SET);
+        fread(bufread,5,1,fd);
+        bufread[20] = 0x0;
+        print(bufread);
     }
+    //struct path_root *root_path = path_parse("0:/bin/shell.exe",NULL);
+    //if(root_path)
+    //{
+
+    //}
+    while(1) {}
 #if 0
     char *ptr2 = (char*)0x1000;
     ptr2[0] = 'P';

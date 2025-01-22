@@ -1,32 +1,34 @@
 #ifndef HEAP_H
 #define HEAP_H
-
 #include "config.h"
+#include <stdint.h>
 #include <stddef.h>
 
-#define HEAP_BLK_TABLE_ENT_TAKEN 0x1
-#define HEAP_BLK_TABLE_ENT_FREE 0x0
+#define HEAP_BLOCK_TABLE_ENTRY_TAKEN 0x01
+#define HEAP_BLOCK_TABLE_ENTRY_FREE 0x00
 
-#define HEAP_BLK_HAS_NEXT 0b10000000
-#define HEAP_BLK_HAS_FIRST 0b01000000
+#define HEAP_BLOCK_HAS_NEXT 0b10000000
+#define HEAP_BLOCK_IS_FIRST  0b01000000
 
 
-typedef unsigned char HEAP_BLK_TABLE_ENT;
-
-#define HEAP_GET_ENTRY_TYPE(ENTRY) (ENTRY & 0xf)
+typedef unsigned char HEAP_BLOCK_TABLE_ENTRY;
 
 struct heap_table
 {
-    HEAP_BLK_TABLE_ENT *entries;
-    size_t total_size;
+    HEAP_BLOCK_TABLE_ENTRY* entries;
+    size_t total;
 };
+
 
 struct heap
 {
-    struct heap_table *table;
-    void *sAddr;/*Start address of heap table*/
+    struct heap_table* table;
+
+    // Start address of the heap data pool
+    void* saddr;
 };
-int heap_create(struct heap* heap,void *ptr, void *end, struct heap_table *table);
-void *heap_malloc(struct heap *heap,int size);
-void heap_free(struct heap *heap,void *ptr);
+
+int heap_create(struct heap* heap, void* ptr, void* end, struct heap_table* table);
+void* heap_malloc(struct heap* heap, size_t size);
+void heap_free(struct heap* heap, void* ptr);
 #endif

@@ -1,12 +1,13 @@
 #ifndef STRING_H
 #define STRING_H
-
-#include "config.h"
-#include  <stdbool.h>
-
-int strlen(const char *str);
-bool isDigit(char c);
-int tonumeric(char c);
-int strnlen(const char *str,int max);
-int memcmp(void *str1,void *str2,int cnt);
+#include <stdbool.h>
+int strlen(const char* ptr);
+int strnlen(const char* ptr, int max);
+bool isdigit(char c);
+int tonumericdigit(char c);
+char* strcpy(char* dest, const char* src);
+int strncmp(const char* str1, const char* str2, int n);
+int istrncmp(const char* s1, const char* s2, int n);
+int strnlen_terminator(const char* str, int max, char terminator);
+char tolower(char s1);
 #endif

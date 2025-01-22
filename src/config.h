@@ -17,9 +17,20 @@
 
 #define DISK_SECTOR_SIZE    512
 
+#define MAX_FILESYSTEMS 12
+#define MAX_FILE_DESCRIPTORS 512
+#define MAX_PATH 108
+
 #define KRNL_OK 0
 #define EIO     1
 #define EINVARG 2
 #define ENOMEM  3
 #define EBADPATH 4
+#define EFSNOTUS 5
+#define ERDONLY 6
+#define EUIMP   7
+
+#define ERROR(value) (void*)(value)
+#define ERROR_I(value) (int)(value)
+#define ISERR(value) ((int)value < 0)
 #endif

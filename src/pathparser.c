@@ -1,11 +1,12 @@
 #include "pathparser.h"
 #include "string.h"
 #include "kheap.h"
+#include "memory.h"
 
 static int valid_path_format(const char* filename)
 {
     int len = strlen(filename);
-    return (len >= 3 && isDigit(filename[0]) && memcmp((void*)&filename[1],":/",2)== 0);
+    return (len >= 3 && isdigit(filename[0]) && memcmp((void*)&filename[1],":/",2)== 0);
 }
 
 static int get_drv_by_path(const char **path)
@@ -14,7 +15,7 @@ static int get_drv_by_path(const char **path)
     {
         return -EBADPATH;
     }
-    int drv_no = tonumeric(*path[0]);
+    int drv_no = tonumericdigit(*path[0]);
     //increment path pointer now to skip the drive number Ex:0:/
     *path+=3;
     return drv_no;

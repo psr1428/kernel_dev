@@ -1,50 +1,103 @@
 #include "string.h"
 
-int strlen(const char *str)
+char tolower(char s1)
 {
-    int str_len = 0;
+    if (s1 >= 65 && s1 <= 90)
+    {
+        s1 += 32;
+    }
+
+    return s1;
+}
+
+int strlen(const char* ptr)
+{
     int i = 0;
-    while(str[i] != '\0')
+    while(*ptr != 0)
     {
-        str_len++;
         i++;
+        ptr += 1;
     }
-    return str_len;
+
+    return i;
 }
 
-int strnlen(const char *str,int max)
+int strnlen(const char* ptr, int max)
 {
-    int str_len = 0;
-    for(str_len = 0; str_len < max; str_len++)
+    int i = 0;
+    for (i = 0; i < max; i++)
     {
-        if(str[str_len] == '\0')
-        {
+        if (ptr[i] == 0)
             break;
-        }
     }
-    return str_len;
+
+    return i;
 }
 
-int tonumeric(char c)
+int strnlen_terminator(const char* str, int max, char terminator)
 {
-    return c-48;
-}
-
-bool isDigit(char c)
-{
-    return (c >=48 && c <= 57);
-}
-
-int memcmp(void *str1,void *str2,int cnt)
-{
-    char *c1 = str1;
-    char *c2 = str2;
-    while(cnt--)
+    int i = 0;
+    for(i = 0; i < max; i++)
     {
-        if(*c1++ != *c2++)
-        {
-            return c1[-1] < c2[-1] ? -1: 1;
-        }
+        if (str[i] == '\0' || str[i] == terminator)
+            break;
     }
+
+    return i;
+}
+
+int istrncmp(const char* s1, const char* s2, int n)
+{
+    unsigned char u1, u2;
+    while(n-- > 0)
+    {
+        u1 = (unsigned char)*s1++;
+        u2 = (unsigned char)*s2++;
+        if (u1 != u2 && tolower(u1) != tolower(u2))
+            return u1 - u2;
+        if (u1 == '\0')
+            return 0;
+    }
+
     return 0;
+}
+int strncmp(const char* str1, const char* str2, int n)
+{
+    unsigned char u1, u2;
+
+    while(n-- > 0)
+    {
+        u1 = (unsigned char)*str1++;
+        u2 = (unsigned char)*str2++;
+        if (u1 != u2)
+            return u1 - u2;
+        if (u1 == '\0')
+            return 0;
+    }
+
+    return 0;
+}
+
+char* strcpy(char* dest, const char* src)
+{
+    char* res = dest;
+    while(*src != 0)
+    {
+        *dest = *src;
+        src += 1;
+        dest += 1;
+    }
+
+    *dest = 0x00;
+
+    return res;
+}
+
+bool isdigit(char c)
+{
+    return c >= 48 && c <= 57;
+}
+int tonumericdigit(char c)
+{
+    return c - 48;
 }

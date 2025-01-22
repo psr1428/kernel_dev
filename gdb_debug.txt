@@ -5,7 +5,7 @@ export PATH="$PREFIX/bin:$PATH"
 export PREFIX="$HOME/opt/cross"
 
 remote debug :
-qemu-system-x86_64 -drive format=raw,file=./build/os.bin -S -gdb tcp::1234 --nographic
+qemu-system-i386 -drive format=raw,file=./build/os.bin -S -gdb tcp::1234 --nographic
 gdb
 target remote localhost:1234
 add-symbol-file ./build/kernel_full.o 0x100000
