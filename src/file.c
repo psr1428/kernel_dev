@@ -53,6 +53,12 @@ void fs_init()
     fs_load();
 }
 
+static int file_free_descriiptor(struct file_descriptor* desc)
+{
+    file_descriptors[desc->index-1] = 0;
+    kernel_free(desc);
+    return 0;
+}
 static int file_new_descriptor(struct file_descriptor** desc_out)
 {
     int res = -ENOMEM;
@@ -207,4 +213,29 @@ int fseek(int fd,int offset,FILE_SEEK_MODE where)
     }
     int res = desc->filesystem->seek(desc->private,offset,where);
     return res;
+}
+
+int fstat(int fd,struct file_stat *stat)
+{
+    struct file_descriptor *desc = file_get_descriptor(fd);
+    if(!desc)
+    {
+        return -EIO;
+    }
+    return desc->filesystem->stat(desc->disk,desc->private,stat);
+}
+
+int fclose(int fd)
+{
+    struct file_descriptor *desc = file_get_descriptor(fd);
+    if(!desc)
+    {
+        return -EIO;
+    }
+    int res = desc->filesystem->close(desc->private);
+    if(res != 0)
+    {
+        return -1;
+    }
+    return file_free_descriiptor(desc);
 }

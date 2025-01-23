@@ -49,13 +49,17 @@ void kernel_main()
     enable_interrupts();
     int fd = fopen("0:/hello.txt", "r");
     char bufread[20];
+    struct file_stat s;
     if (fd)
     {
         print("We opened hello.txt\n");
         fseek(fd,5,SEEK_SET);
         fread(bufread,5,1,fd);
-        bufread[20] = 0x0;
+        // bufread[20] = 0x0;
         print(bufread);
+        fstat(fd,&s);
+        fclose(fd);
+        print("\nfile is closed\n");
     }
     //struct path_root *root_path = path_parse("0:/bin/shell.exe",NULL);
     //if(root_path)

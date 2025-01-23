@@ -11,4 +11,4 @@ target remote localhost:1234
 add-symbol-file ./build/kernel_full.o 0x100000
 
 
-target remote | qemu-system-i386 -hda ./build/os.bin -S -gdb stdio
+target remote | qemu-system-i386 -hda ./build/os.bin -S -gdb stdio  

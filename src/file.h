@@ -22,11 +22,25 @@ enum
     FILE_MODE_INVALID
 };
 
+enum
+{
+    FILE_STAT_READ_ONLY = 0b00000001
+};
+typedef unsigned int FILE_STAT_FLAG;
+
+struct file_stat
+{
+    FILE_STAT_FLAG flags;
+    uint32_t fileSize;
+};
+
 struct disk;
 typedef void*(*FS_OPEN_FUNCTION)(struct disk* disk, struct path_part* path, FILE_MODE mode);
 typedef int (*FS_RESOLVE_FUNCTION)(struct disk* disk);
 typedef int (*FS_READ_FUNCTION)(struct disk *disk,void *private,uint32_t size,uint32_t nmemb,char *out);
 typedef int (*FS_SEEK_FUNCTION)(void *private,uint32_t offset,FILE_SEEK_MODE seek_mode);
+typedef int (*FS_STAT_FUNCTION)(struct disk *disk,void *private,struct file_stat* stat);
+typedef int (*FS_CLOSE_FUNCTION)(void *private);
 
 struct filesystem
 {
@@ -35,6 +49,8 @@ struct filesystem
     FS_OPEN_FUNCTION open;
     FS_READ_FUNCTION read;
     FS_SEEK_FUNCTION seek;
+    FS_STAT_FUNCTION stat;
+    FS_CLOSE_FUNCTION close;
     char name[20];
 };
 
@@ -51,10 +67,13 @@ struct file_descriptor
     struct disk* disk;
 };
 
+
 void fs_init();
 int fopen(const char* filename, const char* mode_str);
 void fs_insert_filesystem(struct filesystem* filesystem);
 int fread(void *ptr,uint32_t size,uint32_t nmemb,int fd);
 int fseek(int fd,int offset,FILE_SEEK_MODE where);
+int fstat(int fd,struct file_stat *stat);
+int fclose(int fd);
 struct filesystem* fs_resolve(struct disk* disk);
 #endif
